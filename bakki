@@ -1,0 +1,253 @@
+-------------------------------------------- HDFS COMMANDS ------------------------------------------------
+
+Open a terminal window and type these commands at the Linux command line - you shouldn't see any errors:
+
+hdfs dfs -ls /            -- View the contents of the top-level directory in HDFS
+hdfs dfs -ls              -- View the contents of your user directory (likely empty)
+hdfs dfs -mkdir myNewDir  -- Create a new directory named ‘myNewDir’ in your user directory
+hdfs dfs -ls              -- Verify that you now have a directory called ‘myNewDir’
+hdfs dfs -rm -r myNewDir  -- Remove directory ‘myNewDir’
+hdfs dfs -ls              -- Verify that you successfully removed ‘myNewDir’
+hdfs dfs -mkdir funny_input                           -- Create a new directory
+hdfs dfs -put cs_fun.txt funny_input                  -- Put your file into HDFS
+hdfs dfs -cat funny_input/cs_fun.txt                  -- Output the contents of your HDFS file
+cat cs_fun.txt                                        -- Output the contents of your local file
+
+
+
+-- Get the file from HDFS and store it locally into new_copy_from_hdfs.txt: 
+hdfs dfs -get funny_input/cs_fun.txt new_copy_from_hdfs.txt
+
+cat new_copy_from_hdfs.txt -- View the new local version of the file 
+diff cs_fun.txt new_copy_from_hdfs.txt -- The two files should be the same
+
+---------------------------------------------------------------------------------------------- HBASE COMMANDS --------------------------------------------------------------------------------------------------------
+Objective: To create and execute hbase commands for the following operations
+To open hbase terminal
+
+[training@localhost ~]$ hbase shell 
+Output: Hbase(main):001:0>
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1).Hbase(main):001:0>STATUS   
+Shows the cluster status 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2) CREATE TABLE 
+COMMAND: create<tablename>, <columnfamilyname1><columnfamilyname2>
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3.  LIST ( To List all the table )
+COMMAND: Hbase(main):001:0>list
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6. DESCRIBE ( To describe the table )
+COMMAND: describe 'emp' 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7. DISABLE 
+COMMAND: disable 'emp'
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8. DROP ( To Drop the table )
+COMMAND: drop 'emp'
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9. ENABLE  ( To find whether a table is enabled )
+
+COMMAND: enable 'emp' 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10. SCAN (  Using the scan command, we can get the table data  )
+
+COMMAND: scan 'emp' 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+11) DROP ( Deletes a table. Before dropping a table, disable the table )
+
+COMMAND: disable 'emp'
+
+COMMAND: hbase(main):019:0> drop 'emp'
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12. GET ( To get the particular record )
+COMMAND: get method > get 'emp', '1'
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13. DELETE ( To delete the particular record )
+COMMAND: delete ‘<table name>’, ‘<row>’, ‘<column name >’, ‘<time stamp>’
+Ex: delete 'emp', '1', 'personal data: city’,1417521848375
+
+Delete all the records in the table ‘emp’
+
+COMMAND: deleteall ‘emp’
+ --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+14. COUNT, The number of rows of a table is counted using the count command. Its syntax is as follows:
+
+COMMAND: count ‘<table name>’ 
+
+Example:
+count 'emp'
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+15. TRUNCATE,  This command disables drops and recreates a table. The syntax of truncate is as follows:
+          COMMDAND: hbase> truncate 'table name'
+
+EX: truncate 'emp'
+
+
+------------------------------------------------------------------------------------------ HIVE COMANDS -----------------------------------------------------------------------------------------------------------
+Database Operations in HIVE
+
+1. Create a database
+Syntax:
+	create database database_name;
+Example:
+	create database myhiveDB;
+Output:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2. Creating a table
+Syntax: create table database.tablename(columns);
+Example:
+	create table myhiveDB.myhivetbl01(id int,name string);
+Here id and string are the two columns.
+Output :
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+3. Display Database
+Syntax: show databases;
+Output: Display the databases created.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+4. Describe Database
+Syntax: describe database database_name;
+Example:
+describe  database myhiveDB;
+Output: Display the HDFS path of a particular database.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+5. Use database;
+Syntax: use database_name;
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+6. DROP TABLE 
+It used to drop a table inside the hive. Hive will remove all of its data and metadata from the hive meta-store. The hive DROP TABLE statement comes with a PURGE option.  
+In case if the PURGE option is mentioned the data will be completely lost and cannot be recovered later but if not mentioned then data will move to .Trash/current directory. 
+
+Syntax: DROP TABLE [IF EXISTS] table_name [PURGE];
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7. ALTER TABLE 
+Used to perform alterations on the tables. We can modify multiple numbers of properties associated with the table schema in the Hive. 
+
+i. Renaming Table Name
+ALTER TABLE with RENAME is used to change the name of an already existing table in the hive.
+Syntax: ALTER TABLE <current_table_name> RENAME TO <new_table_name>;
+
+
+ii. ADD Columns
+Syntax: ALTER TABLE <table_name> ADD COLUMNS (<col-name>  <data-type>  COMMENT ”, <col-name>  <data-type>  COMMENT ”, ….. )
+Command:
+Let’s add a column contact to the customer table that we have obtained after renaming the demo. 
+ALTER TABLE customer ADD COLUMNS ( contact BIGINT COMMENT ‘Store the customer contact number’);
+
+iii. CHANGE Column
+CHANGE in ALTER TABLE is used to change the name or data type of an existing column or attribute.
+Syntax: ALTER TABLE <table_name> CHANGE <column_name> <new_column_name> <new_data_type>;
+Command: 
+Let’s change the demo_name attribute to customer_name.
+ALTER TABLE customer CHANGE demo_name customer_name STRING; 
+
+
+iv. REPLACE Column
+The REPLACE with ALTER TABLE is used to remove all the existing columns from the table in Hive. The attributes or columns which are added in the ALTER TABLE REPLACE statement will be replaced with the older columns.
+Syntax: ALTER TABLE <table_name> REPLACE COLUMNS (
+<attribute_name> <data_type>,
+<attribute_name> <data_type>,
+.
+.
+.
+);
+For example in our customer table, we have 2 attributes customer_name and contact. If we want to remove the contact attribute the query should be like as shown below.
+Command:
+ALTER TABLE customer REPLACE COLUMNS (
+customer_name STRING
+);
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+8.ALTER Database Command -------
+With the help of the below command, we can add database properties or modify the properties we have added. DBPROPERTIES takes multiple arguments in the form of a key-value pair.
+Syntax:
+DATABASE or SCHEMA is the same thing we can use any name. SCHEMA in ALTER is added in hive 0.14.0 and later.
+ALTER (DATABASE|SCHEMA) <database_name> SET DBPROPERTIES ('<property_name>'='<property_value>',..); 
+
+ Use ALTER to add properties to the database
+ALTER DATABASE student SET DBPROPERTIES ( ' owner ' = ' GFG' , ' Date ' = ' 2020-5-6 ');
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+9. Truncate table
+All the data in the table is deleted, but the table metadata and structure remain intact. 
+Truncating a table is a faster operation than dropping a table because it doesn’t involve deleting and recreating the table. 
+Truncating a table cannot be undone, and the deleted data cannot be recovered.
+Syntax: TRUNCATE [TABLE] table_name [PARTITION partition_spec];
+
+partition_spec: (partition_column = partition_col_value, partition_column = partition_col_value, ...)
+
+Example:
+TRUNCATE TABLE hql.customer;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DML Commands
+1.LOAD command 
+Load data from any file to the database
+In Hive, if unmatched data is loaded then it stores the Null value at the position of unmatched tuple. It will not throw any exception. 
+
+Syntax :LOAD data  [LOCAL] inpath <file path> into table [tablename]
+Example
+LOAD DATA LOCAL INPATH '/home/training/Desktop/clients.csv' INTO TABLE clientstbl;
+_______________________________________________________________________________________________________________________________________________________________________________________________________________________
+2. SELECT COMMAND
+The SELECT statement in Hive is similar to the SELECT statement in SQL used for retrieving data from the database.
+Syntax: SELECT col1,col2 FROM tablename;
+
+Example
+Select * from emp;
+Select salesid,salesamount from sales;
+__________________________________________________________________________________________________________________________________________________________________________________________________________________________
+3. INSERT Command
+The INSERT command in Hive loads the data into a Hive table and partition.
+
+a. INSERT INTO
+INSERT INTO statement appends the data into existing data in the table or partition. INSERT INTO statement works from Hive version 0.8.
+
+Syntax: INSERT INTO TABLE tablename1 [PARTITION (partcol1=val1, partcol2=val2 ...)] select_statement1 FROM from_statement;
+
+
+
+b. INSERT OVERWRITE
+The INSERT OVERWRITE table overwrites the existing data in the table or partition.
+
+Syntax: INSERT OVERWRITE TABLE tablename1 [PARTITION (partcol1=val1, ..) [IF NOT EXISTS]] select_statement FROM from_statement;
+
+Example:
+INSERT OVERWRITE DIRECTORY '/user/data/output/export' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' SELECT * FROM emp.employee;
+___________________________________________________________________________________________________________________________________________________________________________________________________________________
+4. DELETE command
+The DELETE statement in Hive deletes the table data. If the WHERE clause is specified, then it deletes the rows that satisfy the condition in where clause.
+The DELETE statement can only be used on the hive tables that support ACID.
+
+Syntax: DELETE FROM tablename [WHERE expression];
+____________________________________________________________________________________________________________________________________________________________________________________________________________________
+5. UPDATE Command
+The update can be performed on the hive tables that support ACID.
+The UPDATE statement in Hive deletes the table data. If the WHERE clause is specified, then it updates the column of the rows that satisfy the condition in WHERE clause.
+Partitioning and Bucketing columns cannot be updated.
+
+Syntax: UPDATE tablename SET column = value [, column = value ...] [WHERE expression];
+______________________________________________________________________________________________________________________________________________________________________________________________________________________
+6. EXPORT Command
+The Hive EXPORT statement exports the table or partition data along with the metadata to the specified output location in the HDFS.
+Metadata is exported in a _metadata file, and data is exported in a subdirectory ‘data.’
+
+Syntax: EXPORT TABLE tablename [PARTITION (part_column="value"[, ...])] TO 
+'export_target_path'  [ FOR replication('eventid') ];
+
+Example:
+export table user_info to 'hdfs_exports_location/user_info';
+______________________________________________________________________________________________________________________________________________________________________________________________________________________
+7. IMPORT Command
+The Hive IMPORT command imports the data from a specified location to a new table or already existing table.
+
+Syntax: IMPORT [[EXTERNAL] TABLE new_or_original_tablename [PARTITION (part_column="value"[, ...])]]
+FROM 'source_path' [LOCATION 'import_target_path']
+
+Example
+import table emp from 'hdfs_imports_location/emp1;
+
